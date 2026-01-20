@@ -1,6 +1,6 @@
 # CV.AI - Seu currículo. Potencializado por IA.
 
-Projeto de gerador de currículos profissionais utilizando Next.js, Fastify e Google Vertex AI.
+Projeto de gerador de currículos profissionais utilizando Next.js, Fastify e Google Vertex AI / Gemini.
 
 ## Estrutura do Projeto
 
@@ -26,3 +26,4 @@ Projeto de gerador de currículos profissionais utilizando Next.js, Fastify e Go
 ## Documentação de Suporte
 - [Blueprint de Arquitetura](./CV_AI_BLUEPRINT.md)
 - [Plano de Sprints](./SPRINT_PLAN.md)
+- [Guia de Deploy](./DEPLOY.md)
