@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:15
+    container_name: cv-ai-db
+    restart: always
+    environment:
+      - POSTGRES_USER=cv_ai_user
+      - POSTGRES_PASSWORD=cv_ai_password
+      - POSTGRES_DB=cv_ai_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
