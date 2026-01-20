@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CV.AI - Potencializado por IA",
+  title: "CurriculoExpert - Potencializado por IA",
   description: "Crie currículos profissionais otimizados para ATS com o poder da Inteligência Artificial.",
 };
 

@@ -47,7 +47,7 @@ export default function LoginPage() {
 
             <Card className="w-full max-w-md border-zinc-800 bg-zinc-900/50 backdrop-blur-xl">
                 <CardHeader className="space-y-1 text-center">
-                    <CardTitle className="text-2xl font-bold tracking-tight text-white">CV.AI</CardTitle>
+                    <CardTitle className="text-2xl font-bold tracking-tight text-white">CurriculoExpert</CardTitle>
                     <CardDescription className="text-zinc-400">
                         Entre para criar seu currículo de elite
                     </CardDescription>
