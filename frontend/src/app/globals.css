@@ -6,8 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-outfit), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-inter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -44,6 +44,14 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 :root {
@@ -115,54 +123,83 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
-/* Print Styles */
+/* Print Styles Refined */
 @media print {
-  @page {
-    size: A4;
-    margin: 0;
-  }
-
   body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     background: white !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Esconde tudo que não for o currículo em si, se não tiver a classe print:hidden já aplicada */
-  body > *:not(main) {
+  @page {
+    size: A4;
+    margin: 0mm;
+    /* Remove browser default margins */
+  }
+
+  /* Esconde tudo que não for o conteúdo principal */
+  body>*:not(main),
+  .print\:hidden {
     display: none !important;
   }
 
-  /* Garante que o container principal ocupe tudo */
   main {
-      padding: 0 !important;
-      margin: 0 !important;
-      height: 100vh !important;
-      width: 100vw !important;
-      background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    background: white !important;
   }
 
   /* O papel A4 em si */
   div[class*="w-[210mm]"] {
-      width: 100% !important;
-      height: 100% !important;
-      box-shadow: none !important;
-      margin: 0 !important;
-      border-radius: 0 !important;
-      page-break-after: avoid !important;
-      page-break-inside: avoid !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    background: white !important;
   }
-  
-  /* Esconde scrollbars */
+
+  /* Evita que itens quebrem no meio */
+  section,
+  .group\/item,
+  h2,
+  h1 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Garante que o texto seja legível */
+  .text-zinc-950 {
+    color: #09090b !important;
+  }
+
+  .text-zinc-600 {
+    color: #52525b !important;
+  }
+
+  .text-zinc-400 {
+    color: #a1a1aa !important;
+  }
+
   ::-webkit-scrollbar {
     display: none;
   }

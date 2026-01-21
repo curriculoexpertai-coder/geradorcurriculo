@@ -20,14 +20,15 @@ export async function syncUserToBackend(user: User) {
         });
 
         if (!response.ok) {
-            console.error("Erro ao sincronizar usuário com backend:", await response.text());
-            return null;
+            const errorText = await response.text();
+            console.error("Erro ao sincronizar usuário com backend:", errorText);
+            throw new Error(`Falha na sincronização: ${errorText}`);
         }
 
         return await response.json();
     } catch (error) {
         console.error("Erro de conexão com backend:", error);
-        return null;
+        throw error;
     }
 }
 
@@ -47,14 +48,15 @@ export async function saveResume(uid: string, resumeData: any) {
         });
 
         if (!response.ok) {
-            console.error("Erro ao salvar currículo:", await response.text());
-            return null;
+            const errorText = await response.text();
+            console.error("Erro ao salvar currículo:", errorText);
+            throw new Error(`Falha ao salvar: ${errorText}`);
         }
 
         return await response.json();
     } catch (error) {
         console.error("Erro de conexão ao salvar:", error);
-        return null;
+        throw error;
     }
 }
 
@@ -67,14 +69,15 @@ export async function getResumes(uid: string) {
         });
 
         if (!response.ok) {
-            console.error("Erro ao buscar currículos:", await response.text());
-            return [];
+            const errorText = await response.text();
+            console.error("Erro ao buscar currículos:", errorText);
+            throw new Error(`Falha ao buscar currículos: ${errorText}`);
         }
 
         return await response.json();
     } catch (error) {
         console.error("Erro de conexão ao buscar currículos:", error);
-        return [];
+        throw error;
     }
 }
 
@@ -87,14 +90,15 @@ export async function getResumeById(id: string) {
         });
 
         if (!response.ok) {
-            console.error("Erro ao buscar currículo:", await response.text());
-            return null;
+            const errorText = await response.text();
+            console.error("Erro ao buscar currículo:", errorText);
+            throw new Error(`Falha ao buscar currículo: ${errorText}`);
         }
 
         return await response.json();
     } catch (error) {
         console.error("Erro de conexão ao buscar currículo:", error);
-        return null;
+        throw error;
     }
 }
 
@@ -120,3 +124,131 @@ export async function generateAiText(currentText: string, style: string, section
         throw error;
     }
 }
+
+export async function updateUserProfile(uid: string, profileData: any) {
+    try {
+        const response = await fetch(`${API_URL}/users/${uid}/profile`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(profileData),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erro ao atualizar perfil:", errorText);
+            throw new Error(`Falha ao atualizar perfil: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erro de conexão ao atualizar perfil:", error);
+        throw error;
+    }
+}
+
+export async function getUserProfile(uid: string) {
+    try {
+        const response = await fetch(`${API_URL}/users/${uid}`, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erro ao buscar perfil:", errorText);
+            throw new Error(`Falha ao buscar perfil: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erro de conexão ao buscar perfil:", error);
+        throw error;
+    }
+}
+
+export async function deleteResume(id: string) {
+    try {
+        const response = await fetch(`${API_URL}/resumes/${id}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha ao deletar currículo');
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Erro ao deletar:", error);
+        throw error;
+    }
+}
+
+export async function duplicateResume(id: string) {
+    try {
+        const response = await fetch(`${API_URL}/resumes/${id}/duplicate`, {
+            method: "POST",
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erro ao duplicar currículo:", errorText);
+            throw new Error(`Falha ao duplicar: ${errorText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erro de conexão ao duplicar:", error);
+        throw error;
+    }
+}
+
+export async function analyzeJob(resumeData: any, jobDescription: string) {
+    try {
+        const response = await fetch(`${API_URL}/ai/analyze-job`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ resumeData, jobDescription }),
+        });
+
+        if (!response.ok) {
+            console.error("Erro ao analisar vaga:", await response.text());
+            throw new Error("Falha na análise da IA");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Erro ao chamar Analisador de Vagas:", error);
+        throw error;
+    }
+}
+
+export async function generateCoverLetter(resumeData: any, jobDescription: string) {
+    try {
+        const response = await fetch(`${API_URL}/ai/generate-cover-letter`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ resumeData, jobDescription }),
+        });
+
+        if (!response.ok) {
+            console.error("Erro ao gerar carta:", await response.text());
+            throw new Error("Falha na geração da carta pela IA");
+        }
+
+        const data = await response.json();
+        return data.letter;
+    } catch (error) {
+        console.error("Erro ao gerar carta de apresentação:", error);
+        throw error;
+    }
+}
+
+
+

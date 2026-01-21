@@ -16,7 +16,9 @@ import { aiRoutes } from './routes/ai';
 const start = async () => {
     try {
         await server.register(cors, {
-            origin: true
+            origin: true,
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+            allowedHeaders: ['Content-Type', 'Authorization']
         });
 
         await server.register(userRoutes);
@@ -26,6 +28,8 @@ const start = async () => {
         server.get('/', async (request, reply) => {
             return { status: 'OK', message: 'CV.AI API is running', version: '0.1.0' };
         });
+
+
 
         server.get('/health', async (request, reply) => {
             try {

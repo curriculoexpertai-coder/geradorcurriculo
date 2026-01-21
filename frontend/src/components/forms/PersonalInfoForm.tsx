@@ -32,8 +32,18 @@ const profileSchema = z.object({
     portfolioUrl: z.string().url().optional().or(z.literal("")),
 });
 
+import { useAuth } from "@/contexts/AuthContext";
+import { updateUserProfile, getUserProfile } from "@/services/api";
+import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+// ... schema remains the same ...
+
 export function PersonalInfoForm() {
-    // 1. Define your form.
+    const { user } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+
     const form = useForm<z.infer<typeof profileSchema>>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
@@ -45,13 +55,51 @@ export function PersonalInfoForm() {
             linkedinUrl: "",
             portfolioUrl: "",
         },
-    })
+    });
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof profileSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    useEffect(() => {
+        async function loadProfile() {
+            if (!user) return;
+            const data = await getUserProfile(user.uid);
+            if (data) {
+                form.reset({
+                    name: data.name || "",
+                    email: data.email || "",
+                    phone: data.profile?.phone || "",
+                    location: data.profile?.location || "",
+                    bio: data.profile?.bio || "",
+                    linkedinUrl: data.profile?.linkedinUrl || "",
+                    portfolioUrl: data.profile?.portfolioUrl || "",
+                });
+            }
+            setIsLoading(false);
+        }
+        loadProfile();
+    }, [user, form]);
+
+    async function onSubmit(values: z.infer<typeof profileSchema>) {
+        if (!user) return;
+
+        const promise = updateUserProfile(user.uid, values);
+
+        toast.promise(promise, {
+            loading: 'Salvando dados...',
+            success: 'Perfil atualizado com sucesso!',
+            error: 'Erro ao atualizar perfil.',
+        });
+    }
+
+    if (isLoading) {
+        return (
+            <div className="space-y-6">
+                <Skeleton className="h-10 w-full bg-zinc-800" />
+                <div className="grid grid-cols-2 gap-4">
+                    <Skeleton className="h-10 w-full bg-zinc-800" />
+                    <Skeleton className="h-10 w-full bg-zinc-800" />
+                </div>
+                <Skeleton className="h-32 w-full bg-zinc-800" />
+            </div>
+        );
     }
 
     return (
